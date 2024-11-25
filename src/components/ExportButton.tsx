@@ -1,51 +1,74 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from './ui/button';
 import { Download } from 'lucide-react';
-import { toolRegistry } from '../lib/tools/tool-registry';
-import { thoughtLogger } from '../lib/logging/thought-logger';
+import { useToast } from './ui/use-toast';
 
 interface ExportButtonProps {
-  data: any[];
-  filename?: string;
-  onExport?: (success: boolean) => void;
+  data: unknown;
+  filename: string;
+  onExport: (success: boolean) => void;
 }
 
 export function ExportButton({ data, filename, onExport }: ExportButtonProps) {
-  const [isExporting, setIsExporting] = React.useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const { toast } = useToast();
+
+  const validateData = (data: unknown): boolean => {
+    if (!data) return false;
+    if (typeof data !== 'object') return false;
+    if (Array.isArray(data) && data.length === 0) return false;
+    return true;
+  };
 
   const handleExport = async () => {
-    if (isExporting || !data.length) return;
-
-    setIsExporting(true);
     try {
-      const result = await toolRegistry.executeTool('export-to-csv', data);
-      
-      if (result.success) {
-        thoughtLogger.log('success', `Exported ${result.result.rowCount} rows to CSV`);
-        onExport?.(true);
-      } else {
-        thoughtLogger.log('error', `Export failed: ${result.error}`);
-        onExport?.(false);
+      setIsExporting(true);
+
+      if (!validateData(data)) {
+        throw new Error('Invalid data provided for export');
       }
+
+      const blob = new Blob([JSON.stringify(data, null, 2)], { 
+        type: 'application/json' 
+      });
+      
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${filename}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Export Successful",
+        description: `File ${filename}.json has been downloaded`,
+      });
+
+      onExport(true);
     } catch (error) {
-      thoughtLogger.log('error', `Export error: ${error}`);
-      onExport?.(false);
+      console.error('Export failed:', error);
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: error instanceof Error ? error.message : 'Unknown error occurred',
+      });
+      onExport(false);
     } finally {
       setIsExporting(false);
     }
   };
 
   return (
-    <button
-      onClick={handleExport}
-      disabled={isExporting || !data.length}
-      className={`inline-flex items-center px-4 py-2 rounded-lg transition-colors ${
-        isExporting || !data.length
-          ? 'bg-gray-700 text-gray-400 cursor-not-allowed'
-          : 'bg-blue-600 hover:bg-blue-700 text-white'
-      }`}
+    <Button 
+      onClick={handleExport} 
+      variant="default"
+      className="flex items-center gap-2"
+      disabled={isExporting}
     >
-      <Download className="w-4 h-4 mr-2" />
-      {isExporting ? 'Exporting...' : 'Export CSV'}
-    </button>
+      <Download className="w-4 h-4" />
+      {isExporting ? 'Exporting...' : 'Export'}
+    </Button>
   );
 }

@@ -1,33 +1,44 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react({
+      babel: {
+        presets: [
+          ['@babel/preset-react', { runtime: 'automatic' }],
+          '@babel/preset-typescript'
+        ],
+        plugins: ['@babel/plugin-transform-runtime'],
+        babelrc: false,
+        configFile: false
+      }
+    })
+  ],
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   build: {
-    target: 'esnext',
     outDir: 'dist',
     sourcemap: true,
-    minify: 'terser',
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom'],
-          'ui-components': [
-            '@radix-ui/react-dialog',
-            '@radix-ui/react-dropdown-menu',
-            '@radix-ui/react-scroll-area',
-            '@radix-ui/react-switch',
-            '@radix-ui/react-tabs',
-            '@radix-ui/react-toast',
-            '@radix-ui/react-tooltip'
-          ],
-          'charts': ['chart.js', 'react-chartjs-2']
+          'vendor': ['react', 'react-dom'],
+          'ui': ['@/components/ui']
         }
       }
     }
   },
+  optimizeDeps: {
+    include: ['tailwindcss-animate']
+  },
   server: {
-    host: true,
-    port: 5173
+    hmr: {
+      overlay: true
+    }
   }
 });

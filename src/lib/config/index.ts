@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { thoughtLogger } from '../logging/thought-logger';
+import type { ThoughtType } from '../types';
 
 // API key validation schema
 const apiKeysSchema = z.object({
@@ -8,17 +9,15 @@ const apiKeysSchema = z.object({
   perplexity: z.string().min(1, "Perplexity API key is required"),
   huggingface: z.string().min(1, "Hugging Face token is required"),
   github: z.string().min(1, "GitHub token is required"),
-  pinecone: z.string().min(1, "Pinecone API key is required"),
-  openai: z.string().min(1, "OpenAI API key is required")
+  pinecone: z.string().min(1, "Pinecone API key is required")
 });
 
 export type ApiKeys = z.infer<typeof apiKeysSchema>;
 
-// Get environment variables with proper validation
 const getEnvVar = (key: string): string => {
-  const value = import.meta.env[key];
+  const value = import.meta.env[`VITE_${key}`];
   if (!value) {
-    thoughtLogger.log('warning', `Environment variable ${key} is not set`);
+    thoughtLogger.log('error' as ThoughtType, `Environment variable VITE_${key} is not set`);
     return '';
   }
   return value.trim();
@@ -26,20 +25,19 @@ const getEnvVar = (key: string): string => {
 
 export const config = {
   apiKeys: {
-    xai: getEnvVar('VITE_XAI_API_KEY'),
-    groq: getEnvVar('VITE_GROQ_API_KEY'),
-    perplexity: getEnvVar('VITE_PERPLEXITY_API_KEY'),
-    huggingface: getEnvVar('VITE_HUGGINGFACE_TOKEN'),
-    github: getEnvVar('VITE_GITHUB_TOKEN'),
-    pinecone: getEnvVar('VITE_PINECONE_API_KEY'),
-    openai: getEnvVar('VITE_OPENAI_API_KEY')
+    xai: getEnvVar('XAI_API_KEY'),
+    groq: getEnvVar('GROQ_API_KEY'),
+    perplexity: getEnvVar('PERPLEXITY_API_KEY'),
+    huggingface: getEnvVar('HUGGINGFACE_TOKEN'),
+    github: getEnvVar('GITHUB_TOKEN'),
+    pinecone: getEnvVar('PINECONE_API_KEY')
   },
   services: {
     pinecone: {
-      index: getEnvVar('VITE_PINECONE_INDEX') || 'agent-one',
+      index: process.env.PINECONE_INDEX || 'agent-one',
       dimension: 3072,
       metric: 'cosine',
-      host: getEnvVar('VITE_PINECONE_HOST'),
+      host: process.env.PINECONE_ENV,
       embeddingModel: 'text-embedding-3-large'
     },
     github: {

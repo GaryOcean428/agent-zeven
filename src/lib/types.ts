@@ -1,4 +1,6 @@
 export interface Message {
+  id: string;
+  timestamp: number;
   role: 'system' | 'user' | 'assistant';
   content: string;
 }

@@ -1,12 +1,22 @@
 {
-  "framework": "vite",
+  "version": 2,
   "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "devCommand": "npm run dev",
   "installCommand": "npm install",
+  "framework": "vite",
+  "outputDirectory": "dist",
   "env": {
-    "VITE_NODE_VERSION": "20"
+    "VITE_API_URL": "@vite_api_url",
+    "VITE_GITHUB_TOKEN": "@vite_github_token",
+    "VITE_XAI_API_KEY": "@vite_xai_api_key",
+    "VITE_GROQ_API_KEY": "@vite_groq_api_key",
+    "VITE_PERPLEXITY_API_KEY": "@vite_perplexity_api_key",
+    "VITE_PINECONE_API_KEY": "@vite_pinecone_api_key",
+    "VITE_PINECONE_ENVIRONMENT": "@vite_pinecone_environment",
+    "VITE_PINECONE_INDEX": "@vite_pinecone_index"
   },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 } 
