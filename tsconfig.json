@@ -1,26 +1,28 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "target": "ESNext",
     "module": "ESNext",
-    "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["vite/client", "vitest/globals", "node", "@testing-library/jest-dom"],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "allowJs": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
-    "composite": true,
-    "paths": {
-      "*": ["./src/*"]
-    }
+    "baseUrl": "."
   },
-  "include": ["src"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "include": ["src", "vite.config.ts", "vitest.config.ts"],
+  "exclude": ["node_modules", "dist"]
 }

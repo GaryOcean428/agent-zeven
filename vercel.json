@@ -6,17 +6,15 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "env": {
-    "VITE_API_URL": "@vite_api_url",
-    "VITE_GITHUB_TOKEN": "@vite_github_token",
-    "VITE_XAI_API_KEY": "@vite_xai_api_key",
-    "VITE_GROQ_API_KEY": "@vite_groq_api_key",
-    "VITE_PERPLEXITY_API_KEY": "@vite_perplexity_api_key",
-    "VITE_PINECONE_API_KEY": "@vite_pinecone_api_key",
-    "VITE_PINECONE_ENVIRONMENT": "@vite_pinecone_environment",
-    "VITE_PINECONE_INDEX": "@vite_pinecone_index"
-  },
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
-} 
+    "VITE_OPENAI_API_KEY": "@openai_api_key",
+    "VITE_ANTHROPIC_API_KEY": "@anthropic_api_key",
+    "VITE_PINECONE_API_KEY": "@pinecone_api_key",
+    "VITE_PINECONE_ENVIRONMENT": "@pinecone_environment",
+    "VITE_API_URL": "@api_url",
+    "VITE_ENABLE_ANALYTICS": "true",
+    "VITE_ENABLE_DEBUG": "false",
+    "VITE_VECTOR_STORE_NAMESPACE": "production",
+    "VITE_VECTOR_DIMENSION": "1536",
+    "VITE_PERPLEXITY_API_KEY": "@perplexity_api_key"
+  }
+}
