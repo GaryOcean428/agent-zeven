@@ -18,13 +18,15 @@ export class AIClient {
     try {
       const tools = await this.toolhouse.getTools() as Record<string, any>;
       
-      const { text, toolResults } = await generateText({
-        model: anthropic(options.model),
-        tools,
-        messages: options.messages,
-        temperature: options.temperature,
-        maxTokens: options.maxTokens
-      });
+import { generateText, streamText } from '@vercel/ai';
+
+const { text, toolResults } = await generateText({
+  model: anthropic(options.model),
+  tools,
+  messages: options.messages,
+  temperature: options.temperature,
+  maxTokens: options.maxTokens
+});
 
       return { text, toolResults };
     } catch (error) {
