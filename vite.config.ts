@@ -7,10 +7,14 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        plugins: [],
-        presets: ['@babel/preset-react', '@babel/preset-typescript'],
-        babelrc: false,
-        configFile: false,
+        plugins: ['@babel/plugin-transform-runtime'],
+        presets: [
+          ['@babel/preset-env', { targets: { node: 'current' } }],
+          '@babel/preset-typescript',
+          ['@babel/preset-react', { runtime: 'automatic' }]
+        ],
+        babelrc: true,
+        configFile: true,
       }
     })
   ],

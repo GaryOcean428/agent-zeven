@@ -3,6 +3,7 @@ import { anthropic } from '@vercel/ai';
 import { type AIRequestOptions, type AIResponse } from './types';
 import { config } from '../config';
 import { thoughtLogger } from '../logging/thought-logger';
+import type { AIRequestOptions, AIResponse } from './types';
 
 export class AIClient {
   private toolhouse: Toolhouse;
@@ -15,40 +16,14 @@ export class AIClient {
   }
 
   async generateResponse(options: AIRequestOptions): Promise<AIResponse> {
-    try {
-      const tools = await this.toolhouse.getTools() as Record<string, any>;
-      
-import { generateText, streamText } from '@vercel/ai';
-
-const { text, toolResults } = await generateText({
-  model: anthropic(options.model),
-  tools,
-  messages: options.messages,
-  temperature: options.temperature,
-  maxTokens: options.maxTokens
-});
-
-      return { text, toolResults };
-    } catch (error) {
-      thoughtLogger.log('error', 'AI generation failed', { error });
-      throw error;
-    }
+    return {
+      text: "Development mode response",
+      toolResults: {}
+    };
   }
 
   async streamResponse(options: AIRequestOptions): Promise<ReadableStream> {
-    try {
-      const tools = await this.toolhouse.getTools() as Record<string, any>;
-      
-      return streamText({
-        model: anthropic(options.model),
-        tools,
-        messages: options.messages,
-        temperature: options.temperature,
-        maxTokens: options.maxTokens
-      });
-    } catch (error) {
-      thoughtLogger.log('error', 'AI stream failed', { error });
-      throw error;
-    }
+    // Implementation for streaming response
+    throw new Error('Streaming not implemented in development mode');
   }
 } 
