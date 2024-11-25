@@ -1,16 +1,30 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  VITE_API_URL: z.string().optional(),
-  VITE_PUBLIC_APP_MODE: z.string().optional(),
-  XAI_TOKEN: z.string().optional(),
-  GROQ_TOKEN: z.string().optional(),
-  PERPLEXITY_TOKEN: z.string().optional(),
-  HUGGINGFACE_TOKEN: z.string().optional(),
-  GITHUB_TOKEN: z.string().optional(),
-  PINECONE_TOKEN: z.string().optional(),
-  PINECONE_ENV: z.string().optional(),
-  PINECONE_INDEX: z.string().optional()
+  // Client-side variables
+  VITE_GITHUB_USERNAME: z.string(),
+  VITE_GITHUB_USEREMAIL: z.string(),
+  VITE_GOOGLE_SEARCH_ENGINE_ID: z.string(),
+  
+  // Server-side variables
+  PERPLEXITY_API_KEY: z.string(),
+  XAI_API_KEY: z.string(),
+  GROQ_API_KEY: z.string(),
+  HUGGINGFACE_TOKEN: z.string(),
+  ANTHROPIC_API_KEY: z.string(),
+  OPENAI_API_KEY: z.string(),
+  GOOGLE_API_KEY: z.string(),
+  SERP_API_KEY: z.string(),
+  TAVILY_API_KEY: z.string(),
+  GITHUB_TOKEN: z.string(),
+  LANGCHAIN_SERVICE_API_KEY: z.string(),
+  LANGCHAIN_PERSONAL_API_KEY: z.string(),
+  PINECONE_API_KEY: z.string(),
+  REDIS_HOST: z.string(),
+  REDIS_PORT: z.string(),
+  REDIS_PASSWORD: z.string(),
+  REDIS_API: z.string(),
+  REDIS_USERNAME: z.string()
 });
 
 export type Env = z.infer<typeof envSchema>;

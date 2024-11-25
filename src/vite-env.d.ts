@@ -1,17 +1,10 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  // Public variables (client-side)
-  readonly VITE_API_URL: string
-  readonly VITE_PUBLIC_APP_MODE: string
-  readonly VITE_GITHUB_TOKEN: string
-  readonly VITE_XAI_API_KEY: string
-  readonly VITE_GROQ_API_KEY: string
-  readonly VITE_PERPLEXITY_API_KEY: string
-  readonly VITE_HUGGINGFACE_TOKEN: string
-  readonly VITE_PINECONE_API_KEY: string
-  readonly VITE_PINECONE_ENVIRONMENT: string
-  readonly VITE_PINECONE_INDEX: string
+  // Client-side safe variables
+  readonly VITE_GITHUB_USERNAME: string
+  readonly VITE_GITHUB_USEREMAIL: string
+  readonly VITE_GOOGLE_SEARCH_ENGINE_ID: string
 }
 
 interface ImportMeta {
