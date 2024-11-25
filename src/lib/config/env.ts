@@ -1,85 +1,62 @@
 import { z } from 'zod';
 
-const envSchema = z.object({
-  // API Keys
-  VITE_GITHUB_USERNAME: z.string(),
-  VITE_GITHUB_USEREMAIL: z.string().email(),
-  VITE_GOOGLE_SEARCH_ENGINE_ID: z.string(),
-
-  // Server-side variables (these should be in .env.local)
+export const envSchema = z.object({
+  // Client-side variables (optional with defaults)
+  VITE_GITHUB_USERNAME: z.string().optional().default(''),
+  VITE_GITHUB_USEREMAIL: z.string().optional().default(''),
+  VITE_GOOGLE_SEARCH_ENGINE_ID: z.string().optional().default(''),
+  
+  // API Keys (required for core functionality)
+  VITE_OPENAI_API_KEY: z.string(),
+  VITE_ANTHROPIC_API_KEY: z.string(),
+  
+  // Optional API Keys (with fallbacks)
   PERPLEXITY_API_KEY: z.string().optional(),
   XAI_API_KEY: z.string().optional(),
   GROQ_API_KEY: z.string().optional(),
   HUGGINGFACE_TOKEN: z.string().optional(),
-  ANTHROPIC_API_KEY: z.string().optional(),
-  OPENAI_API_KEY: z.string().optional(),
   GOOGLE_API_KEY: z.string().optional(),
   SERP_API_KEY: z.string().optional(),
   TAVILY_API_KEY: z.string().optional(),
   GITHUB_TOKEN: z.string().optional(),
+  
+  // LangChain configuration (optional)
   LANGCHAIN_SERVICE_API_KEY: z.string().optional(),
   LANGCHAIN_PERSONAL_API_KEY: z.string().optional(),
+  
+  // Vector store configuration (optional with defaults)
   PINECONE_API_KEY: z.string().optional(),
-
-  // Redis Configuration
-  REDIS_HOST: z.string().default('localhost'),
-  REDIS_PORT: z.coerce.number().default(6379),
+  VITE_VECTOR_STORE_NAMESPACE: z.string().optional().default('development'),
+  VITE_VECTOR_DIMENSION: z.string().optional().default('1536'),
+  
+  // Redis configuration (optional)
+  REDIS_HOST: z.string().optional().default('localhost'),
+  REDIS_PORT: z.string().optional().default('6379'),
   REDIS_PASSWORD: z.string().optional(),
   REDIS_API: z.string().optional(),
-  REDIS_USERNAME: z.string().default('default')
+  REDIS_USERNAME: z.string().optional().default('default'),
+  
+  // Feature flags (optional with defaults)
+  VITE_ENABLE_ANALYTICS: z.string().optional().default('false'),
+  VITE_ENABLE_DEBUG: z.string().optional().default('false')
 });
 
-// This will throw if required environment variables are missing
-const env = envSchema.parse(process.env);
+export type Env = z.infer<typeof envSchema>;
 
-export const config = {
-  github: {
-    username: env.VITE_GITHUB_USERNAME,
-    email: env.VITE_GITHUB_USEREMAIL,
-    token: env.GITHUB_TOKEN
-  },
-  google: {
-    searchEngineId: env.VITE_GOOGLE_SEARCH_ENGINE_ID,
-    apiKey: env.GOOGLE_API_KEY
-  },
-  ai: {
-    perplexity: env.PERPLEXITY_API_KEY,
-    xai: env.XAI_API_KEY,
-    groq: env.GROQ_API_KEY,
-    huggingface: env.HUGGINGFACE_TOKEN,
-    anthropic: env.ANTHROPIC_API_KEY,
-    openai: env.OPENAI_API_KEY
-  },
-  search: {
-    serp: env.SERP_API_KEY,
-    tavily: env.TAVILY_API_KEY
-  },
-  langchain: {
-    service: env.LANGCHAIN_SERVICE_API_KEY,
-    personal: env.LANGCHAIN_PERSONAL_API_KEY
-  },
-  vectorStore: {
-    pinecone: env.PINECONE_API_KEY
-  },
-  redis: {
-    host: env.REDIS_HOST,
-    port: env.REDIS_PORT,
-    password: env.REDIS_PASSWORD,
-    api: env.REDIS_API,
-    username: env.REDIS_USERNAME
+// Helper function to validate environment variables
+export function validateEnv(): Env {
+  try {
+    return envSchema.parse(process.env);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const missingVars = error.issues
+        .filter(issue => issue.code === 'invalid_type' && issue.received === 'undefined')
+        .map(issue => issue.path.join('.'));
+      
+      if (missingVars.length > 0) {
+        console.error('Missing required environment variables:', missingVars);
+      }
+    }
+    throw error;
   }
-} as const;
-
-// Type for the config object
-export type Config = typeof config;
-
-// Export individual config sections
-export const {
-  github,
-  google,
-  ai,
-  search,
-  langchain,
-  vectorStore,
-  redis
-} = config;
+}

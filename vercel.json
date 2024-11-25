@@ -14,6 +14,7 @@
     "VITE_ENABLE_ANALYTICS": "true",
     "VITE_ENABLE_DEBUG": "false",
     "VITE_VECTOR_STORE_NAMESPACE": "production",
-    "VITE_VECTOR_DIMENSION": "1536"
+    "VITE_VECTOR_DIMENSION": "1536",
+    "VITE_PERPLEXITY_API_KEY": "@perplexity_api_key"
   }
 }
