@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
@@ -38,9 +39,9 @@ export default defineConfig({
       overlay: true
     }
   },
-  server: {
-    hmr: {
-      overlay: true
-    }
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./src/tests/setup.ts'],
+    globals: true
   }
 });

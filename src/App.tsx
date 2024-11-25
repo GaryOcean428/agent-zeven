@@ -14,6 +14,7 @@ import { Tools } from './components/Tools';
 import { Documents } from './components/Documents';
 import { Settings } from './components/Settings';
 import { SearchPanel } from './components/panels/SearchPanel';
+import { AIProvider } from './components/providers/AIProvider';
 
 export type ActivePanel = 'chat' | 'canvas' | 'agent' | 'tools' | 'documents' | 'search' | 'settings';
 
@@ -92,7 +93,9 @@ export default function App() {
         <ConfigProvider>
           <SettingsProvider>
             <SearchProvider>
-              <AppContent />
+              <AIProvider>
+                <AppContent />
+              </AIProvider>
             </SearchProvider>
           </SettingsProvider>
         </ConfigProvider>
