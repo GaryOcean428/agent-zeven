@@ -254,7 +254,20 @@ var GitHubClient = /** @class */ (function () {
                         _a.label = 4;
                     case 4:
                         _a.trys.push([4, 6, , 7]);
-                        return [4 /*yield*/, this.octokit.rest.repos.createOrUpdateFileContents(__assign(__assign({}, params), { content: Buffer.from(params.content).toString('base64') }))];
+const maxRetries = 3;
+let retryCount = 0;
+while (retryCount < maxRetries) {
+    try {
+        return [4 /*yield*/ this.octokit.rest.repos.createOrUpdateFileContents(__assign(__assign({}, params), { content: Buffer.from(params.content).toString('base64') }))];
+    } catch (error) {
+        if (error.status === 429 || (error.status >= 500 && error.status <= 599)) {
+            retryCount++;
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            continue;
+        }
+        throw error;
+    }
+}
                     case 5:
                         _a.sent();
                         return [3 /*break*/, 7];
