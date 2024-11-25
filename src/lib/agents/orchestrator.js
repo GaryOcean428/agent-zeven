@@ -115,18 +115,20 @@ var Orchestrator = /** @class */ (function (_super) {
                                     case 1:
                                         _c.sent();
                                         // Wait for step completion
-                                        return [4 /*yield*/, new Promise(function (resolve, reject) {
-                                                var timeout = setTimeout(function () {
-                                                    reject(new Error('Step execution timeout'));
-                                                }, 30000);
-                                                _this.once('step-completed', function (_a) {
-                                                    var stepId = _a.stepId;
-                                                    if (stepId === step.id) {
-                                                        clearTimeout(timeout);
-                                                        resolve(true);
-                                                    }
-                                                });
-                                            })];
+const stepTimeout = this.config.stepTimeout || 30000;
+return [4 /*yield*/, new Promise(function (resolve, reject) {
+    var timeout = setTimeout(function () {
+        _this.removeAllListeners('step-completed');
+        reject(new Error('Step execution timeout'));
+    }, stepTimeout);
+    _this.once('step-completed', function (_a) {
+        var stepId = _a.stepId;
+        if (stepId === step.id) {
+            clearTimeout(timeout);
+            resolve(true);
+        }
+    });
+})];
                                     case 2:
                                         // Wait for step completion
                                         _c.sent();
