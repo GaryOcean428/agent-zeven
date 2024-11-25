@@ -145,11 +145,22 @@ export class PineconeStoreClient extends VectorStoreClientImpl {
     }
   }
 
-  async fetch(ids: string[]): Promise<Vector[]> {
-    this.validateInitialization();
+async fetch(ids: string[]): Promise {
+  this.validateInitialization();
+  let retries = 0;
+  while (retries < this.config.maxRetries!) {
     try {
       const index = this.pinecone.Index(this.indexName);
       const vectors: Vector[] = [];
+      return vectors;
+    } catch (error) {
+      if (retries === this.config.maxRetries! - 1) throw error;
+      retries++;
+      await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
+    }
+  }
+  throw new Error('Max retries exceeded');
+}
 
       // Process fetches in batches
       for (let i = 0; i < ids.length; i += this.config.batchSize!) {
