@@ -201,11 +201,15 @@ export class PineconeStoreClient extends VectorStoreClientImpl {
       }
     }
 
-    if (filter.metadata) {
-      Object.entries(filter.metadata).forEach(([key, value]) => {
-        pineconeFilter[key] = { $eq: value };
-      });
+if (filter.metadata) {
+  Object.entries(filter.metadata).forEach(([key, value]) => {
+    if (typeof value === 'object' && value !== null) {
+      pineconeFilter[key] = value; // Preserve nested operators
+    } else {
+      pineconeFilter[key] = { $eq: value };
     }
+  });
+}
 
     return pineconeFilter;
   }
