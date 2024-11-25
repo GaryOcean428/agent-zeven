@@ -8,6 +8,12 @@ updates:
     labels:
       - "ci"
       - "dependencies"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "repo-maintainers"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
 
   - package-ecosystem: "npm"
     directory: "/"
@@ -16,9 +22,13 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    vulnerability-alerts: true
     ignore:
       # Ignore major version updates for these packages to avoid breaking changes
       - dependency-name: "@types/*"
+        update-types: ["version-update:semver-major"]
+      # Add other packages that need careful updates
+      - dependency-name: "typescript"
         update-types: ["version-update:semver-major"]
     groups:
       # Group all non-major dependencies together
@@ -28,3 +38,9 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    open-pull-requests-limit: 15
+    reviewers:
+      - "repo-maintainers"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
