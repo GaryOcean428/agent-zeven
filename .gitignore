@@ -1,46 +1,37 @@
-# Environment
+# Environment variables
 .env
 .env.local
 .env.*.local
+.env.development
+.env.test
+.env.production
 
+# Build output
+dist
+build
 
 # Dependencies
 node_modules
-.pnp
-.pnp.js
 
-# Testing
-coverage
-.nyc_output
+# IDE files
+.vscode
+.idea
+*.swp
+*.swo
 
-# Build
-dist
-build
-out
-
-# Debug
+# Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-.github/dependabot.yml
 
-# Editor
-.vscode/*
-!.vscode/extensions.json
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Test coverage
+coverage
 
-# System
+# Local development files
+*.local
+local.*
+
+# System files
 .DS_Store
 Thumbs.db
-
-# Logs
-logs
-*.log
 
