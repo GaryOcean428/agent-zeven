@@ -68,9 +68,11 @@ export function DocumentList({
                   ? 'bg-blue-600 text-white'
                   : 'text-gray-400 hover:bg-gray-700'
               }`}
+              title={`Filter by tag: ${tag}`}
+              aria-label={`Filter by tag: ${tag}`}
             >
               <div className="flex items-center">
-                <Tag className="w-3 h-3 mr-2" />
+                <Tag size={12} className="mr-1" />
                 <span>{tag}</span>
                 {selectedTags.includes(tag) && (
                   <span className="ml-auto text-xs bg-blue-500 px-1.5 rounded-full">
@@ -101,6 +103,8 @@ export function DocumentList({
                 type="button"
                 onClick={clearSearch}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+                title="Clear search"
+                aria-label="Clear search"
               >
                 <X size={18} />
               </button>
@@ -145,10 +149,18 @@ function DocumentCard({ document }: { document: Document }) {
           </div>
         </div>
         <div className="flex items-center space-x-2">
-          <button className="text-gray-400 hover:text-gray-300">
+          <button
+            className="text-gray-400 hover:text-gray-300"
+            title="Open Document"
+            aria-label="Open Document"
+          >
             <ExternalLink size={16} />
           </button>
-          <button className="text-gray-400 hover:text-red-400">
+          <button
+            className="text-gray-400 hover:text-red-400"
+            title="Delete Document"
+            aria-label="Delete Document"
+          >
             <Trash2 size={16} />
           </button>
         </div>
@@ -198,10 +210,18 @@ function DocumentRow({ document }: { document: Document }) {
         </div>
       </div>
       <div className="flex items-center space-x-2">
-        <button className="p-2 text-gray-400 hover:text-gray-300 rounded">
+        <button
+          className="p-2 text-gray-400 hover:text-gray-300 rounded"
+          title="Open Document"
+          aria-label="Open Document"
+        >
           <ExternalLink size={16} />
         </button>
-        <button className="p-2 text-gray-400 hover:text-red-400 rounded">
+        <button
+          className="p-2 text-gray-400 hover:text-red-400 rounded"
+          title="Delete Document"
+          aria-label="Delete Document"
+        >
           <Trash2 size={16} />
         </button>
       </div>

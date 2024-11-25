@@ -74,6 +74,8 @@ export function DocumentWorkspace() {
                   ? 'bg-gray-700 text-blue-400'
                   : 'text-gray-400 hover:text-gray-300'
               }`}
+              title="Grid View"
+              aria-label="Grid View"
             >
               <Grid size={20} />
             </button>
@@ -84,6 +86,8 @@ export function DocumentWorkspace() {
                   ? 'bg-gray-700 text-blue-400'
                   : 'text-gray-400 hover:text-gray-300'
               }`}
+              title="List View"
+              aria-label="List View"
             >
               <List size={20} />
             </button>
@@ -92,6 +96,8 @@ export function DocumentWorkspace() {
           <button
             onClick={() => setIsUploadOpen(true)}
             className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors w-full sm:w-auto justify-center"
+            title="Upload Document"
+            aria-label="Upload Document"
           >
             <Plus size={20} />
             <span>Upload</span>

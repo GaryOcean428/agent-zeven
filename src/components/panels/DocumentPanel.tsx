@@ -73,6 +73,8 @@ export function DocumentPanel() {
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
+              title="Grid View"
+              aria-label="Grid View"
             >
               <Grid size={20} />
             </button>
@@ -83,6 +85,8 @@ export function DocumentPanel() {
                   ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
+              title="List View"
+              aria-label="List View"
             >
               <List size={20} />
             </button>
@@ -91,6 +95,8 @@ export function DocumentPanel() {
           <button
             onClick={() => setIsUploadOpen(true)}
             className="flex items-center space-x-2 bg-primary text-primary-foreground px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors w-full sm:w-auto justify-center"
+            title="Upload Document"
+            aria-label="Upload Document"
           >
             <Upload size={20} />
             <span>Upload</span>

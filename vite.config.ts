@@ -6,13 +6,10 @@ export default defineConfig({
   plugins: [
     react({
       babel: {
-        presets: [
-          ['@babel/preset-react', { runtime: 'automatic' }],
-          '@babel/preset-typescript'
-        ],
-        plugins: ['@babel/plugin-transform-runtime'],
+        plugins: [],
+        presets: ['@babel/preset-react', '@babel/preset-typescript'],
         babelrc: false,
-        configFile: false
+        configFile: false,
       }
     })
   ],
@@ -35,6 +32,11 @@ export default defineConfig({
   },
   optimizeDeps: {
     include: ['tailwindcss-animate']
+  },
+  server: {
+    hmr: {
+      overlay: true
+    }
   },
   server: {
     hmr: {
