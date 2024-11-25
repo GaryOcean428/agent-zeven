@@ -59,3 +59,31 @@ logs
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Vercel
+.vercel
+.now
+.env*.local
+.output
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# Next.js
+.next
+out
+
+# Serverless
+.serverless/
