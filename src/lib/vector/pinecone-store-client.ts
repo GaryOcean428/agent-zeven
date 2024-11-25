@@ -1,190 +1,140 @@
-import { PineconeClient, QueryRequest, UpsertRequest } from '@pinecone-database/pinecone';
+import { PineconeClient, type Vector } from '@pinecone-database/pinecone';
 import { thoughtLogger } from '../logging/thought-logger';
-import { config } from '../config';
-import { 
-  Vector,
-  VectorStoreConfig,
-  VectorQuery,
-  VectorQueryResponse,
-  VectorStoreError,
-  VectorStoreClient,
-  VectorStoreEvent,
-  VectorFilter
-} from './types';
-import { VectorStoreClientImpl } from './vector-store-client';
+import { BaseVectorStore } from './base-vector-store';
 
-export class PineconeStoreClient extends VectorStoreClientImpl {
-  private pinecone: PineconeClient;
-  private indexName: string;
-  private namespace: string;
-
-  constructor() {
-    super();
-    this.pinecone = new PineconeClient();
-  }
-
-  async initialize(config: VectorStoreConfig): Promise<void> {
-    try {
-      await super.initialize(config);
-
-      if (!config.apiKeys?.pinecone) {
-        throw new Error('Pinecone API key not configured');
-      }
-
-      await this.pinecone.init({
-        apiKey: config.apiKeys.pinecone,
-        environment: config.services?.pinecone?.environment || 'production'
-      });
-
-      this.indexName = config.services?.pinecone?.indexName || 'default-index';
-      this.namespace = config.namespace || 'default';
-
-      // Verify index exists
-      const indexList = await this.pinecone.listIndexes();
-      if (!indexList.includes(this.indexName)) {
-        throw new Error(`Pinecone index ${this.indexName} not found`);
-      }
-
-      thoughtLogger.log('execution', 'Pinecone store initialized', {
-        indexName: this.indexName,
-        namespace: this.namespace
-      });
-    } catch (error) {
-      this.handleError('INITIALIZATION_ERROR', 'Failed to initialize Pinecone store', error);
-      throw error;
-    }
-  }
-
-  async upsert(vectors: Vector[]): Promise<string[]> {
-    this.validateInitialization();
-    const startTime = Date.now();
-
-    try {
-      const index = this.pinecone.Index(this.indexName);
-      const vectorIds: string[] = [];
-
-      // Process in batches
-      for (let i = 0; i < vectors.length; i += this.config.batchSize!) {
-        const batch = vectors.slice(i, i + this.config.batchSize!);
-        
-        const upsertRequest: UpsertRequest = {
-          vectors: batch.map(vector => ({
-            id: vector.id,
-            values: vector.values,
-            metadata: vector.metadata
-          })),
-          namespace: this.namespace
-        };
-
-        await index.upsert({ upsertRequest });
-        vectorIds.push(...batch.map(v => v.id));
-      }
-
-      this.updateMetrics('upsert', startTime, vectors.length);
-      return vectorIds;
-    } catch (error) {
-      this.handleError('OPERATION_ERROR', 'Pinecone upsert operation failed', error);
-      throw error;
-    }
-  }
-
-  async query(query: VectorQuery): Promise<VectorQueryResponse> {
-    this.validateInitialization();
-    const startTime = Date.now();
-
-    try {
-      const index = this.pinecone.Index(this.indexName);
-
-      const queryRequest: QueryRequest = {
-        vector: query.vector,
-        topK: query.topK || 10,
-        namespace: query.namespace || this.namespace,
-        includeMetadata: query.includeMetadata ?? true,
-        filter: this.transformFilter(query.filter)
-      };
-
-      const queryResponse = await index.query({ queryRequest });
-
-      const response: VectorQueryResponse = {
-        matches: queryResponse.matches?.map(match => ({
-          id: match.id,
-          score: match.score,
-          values: match.values,
-          metadata: match.metadata
-        })) || [],
-        namespace: query.namespace || this.namespace
-      };
-
-      this.updateMetrics('query', startTime);
-      return response;
-    } catch (error) {
-      this.handleError('QUERY_ERROR', 'Pinecone query operation failed', error);
-      throw error;
-    }
-  }
-
-  async delete(ids: string[]): Promise<void> {
-    this.validateInitialization();
-    try {
-      const index = this.pinecone.Index(this.indexName);
-      
-      // Process deletions in batches
-      for (let i = 0; i < ids.length; i += this.config.batchSize!) {
-        const batch = ids.slice(i, i + this.config.batchSize!);
-        await index.delete1({
-          ids: batch,
-          namespace: this.namespace
-        });
-      }
-
-      this.metrics.operations.deletes += ids.length;
-      thoughtLogger.log('execution', 'Vectors deleted from Pinecone', { count: ids.length });
-    } catch (error) {
-      this.handleError('OPERATION_ERROR', 'Pinecone delete operation failed', error);
-      throw error;
-    }
-  }
-
-async fetch(ids: string[]): Promise {
-  this.validateInitialization();
-  let retries = 0;
-  while (retries < this.config.maxRetries!) {
-    try {
-      const index = this.pinecone.Index(this.indexName);
-      const vectors: Vector[] = [];
-      return vectors;
-    } catch (error) {
-      if (retries === this.config.maxRetries! - 1) throw error;
-      retries++;
-      await new Promise(resolve => setTimeout(resolve, Math.pow(2, retries) * 1000));
-    }
-  }
-  throw new Error('Max retries exceeded');
+interface PineconeConfig {
+  apiKey: string;
+  environment: string;
+  namespace?: string;
+  batchSize?: number;
+  dimension?: number;
 }
 
-      // Process fetches in batches
-      for (let i = 0; i < ids.length; i += this.config.batchSize!) {
-        const batch = ids.slice(i, i + this.config.batchSize!);
-        const response = await index.fetch({
-          ids: batch,
-          namespace: this.namespace
-        });
+interface VectorFilter {
+  [key: string]: any;
+}
 
-        if (response.vectors) {
-          for (const [id, vector] of Object.entries(response.vectors)) {
-            vectors.push({
-              id,
-              values: vector.values,
-              metadata: vector.metadata
-            });
-          }
-        }
+interface VectorMetrics {
+  operations: {
+    upserts: number;
+    queries: number;
+    fetches: number;
+    deletions: number;
+  };
+  performance: {
+    averageUpsertTime: number;
+    averageQueryTime: number;
+    averageFetchTime: number;
+    averageDeletionTime: number;
+  };
+}
+
+export class PineconeStoreClient extends BaseVectorStore {
+  private client: PineconeClient;
+  private config: PineconeConfig;
+  private metrics: VectorMetrics;
+
+  constructor(config: PineconeConfig) {
+    super();
+    this.config = {
+      ...config,
+      batchSize: config.batchSize || 100,
+      dimension: config.dimension || 1536
+    };
+    this.client = new PineconeClient();
+    this.metrics = {
+      operations: {
+        upserts: 0,
+        queries: 0,
+        fetches: 0,
+        deletions: 0
+      },
+      performance: {
+        averageUpsertTime: 0,
+        averageQueryTime: 0,
+        averageFetchTime: 0,
+        averageDeletionTime: 0
+      }
+    };
+  }
+
+  async initialize(): Promise<void> {
+    try {
+      await this.client.init({
+        apiKey: this.config.apiKey,
+        environment: this.config.environment
+      });
+      thoughtLogger.log('success', 'Pinecone client initialized successfully');
+    } catch (error) {
+      thoughtLogger.log('error', 'Failed to initialize Pinecone client', { error });
+      throw error;
+    }
+  }
+
+  async upsert(vectors: Vector[]): Promise<void> {
+    try {
+      const startTime = Date.now();
+      const index = this.client.Index(this.config.namespace || 'default');
+
+      for (let i = 0; i < vectors.length; i += this.config.batchSize!) {
+        const batch = vectors.slice(i, i + this.config.batchSize!);
+        await index.upsert({
+          vectors: batch,
+          namespace: this.config.namespace
+        });
+      }
+
+      this.metrics.operations.upserts++;
+      this.updatePerformanceMetrics('upsert', startTime);
+      thoughtLogger.log('success', 'Vectors upserted successfully', { count: vectors.length });
+    } catch (error) {
+      thoughtLogger.log('error', 'Failed to upsert vectors', { error });
+      throw error;
+    }
+  }
+
+  async query(vector: number[], filter?: VectorFilter, topK: number = 10): Promise<Vector[]> {
+    try {
+      const startTime = Date.now();
+      const index = this.client.Index(this.config.namespace || 'default');
+
+      const response = await index.query({
+        vector,
+        topK,
+        filter: this.transformFilter(filter),
+        namespace: this.config.namespace,
+        includeMetadata: true
+      });
+
+      this.metrics.operations.queries++;
+      this.updatePerformanceMetrics('query', startTime);
+      return response.matches as Vector[];
+    } catch (error) {
+      thoughtLogger.log('error', 'Failed to query vectors', { error });
+      throw error;
+    }
+  }
+
+  async fetch(ids: string[]): Promise<Vector[]> {
+    try {
+      const startTime = Date.now();
+      const index = this.client.Index(this.config.namespace || 'default');
+      const vectors: Vector[] = [];
+
+      for (let i = 0; i < ids.length; i += this.config.batchSize!) {
+        const batchIds = ids.slice(i, i + this.config.batchSize!);
+        const response = await index.fetch({
+          ids: batchIds,
+          namespace: this.config.namespace
+        });
+        vectors.push(...Object.values(response.vectors));
       }
 
       this.metrics.operations.fetches++;
+      this.updatePerformanceMetrics('fetch', startTime);
       return vectors;
     } catch (error) {
-      this.handleError('OPERATION_ERROR', 'Pinecone fetch operation failed', error);
+      thoughtLogger.log('error', 'Failed to fetch vectors', { error });
       throw error;
     }
   }
@@ -192,45 +142,38 @@ async fetch(ids: string[]): Promise {
   private transformFilter(filter?: VectorFilter): Record<string, any> | undefined {
     if (!filter) return undefined;
 
-    const pineconeFilter: Record<string, any> = {};
-
-    if (filter.source) {
-      pineconeFilter['source'] = { $eq: filter.source };
-    }
-
-    if (filter.type) {
-      pineconeFilter['type'] = { $eq: filter.type };
-    }
-
-    if (filter.timestamp) {
-      pineconeFilter['timestamp'] = {};
-      if (filter.timestamp.gt) {
-        pineconeFilter['timestamp']['$gt'] = filter.timestamp.gt;
-      }
-      if (filter.timestamp.lt) {
-        pineconeFilter['timestamp']['$lt'] = filter.timestamp.lt;
+    // Transform the filter object into Pinecone's expected format
+    const transformedFilter: Record<string, any> = {};
+    for (const [key, value] of Object.entries(filter)) {
+      if (Array.isArray(value)) {
+        transformedFilter[key] = { $in: value };
+      } else if (typeof value === 'object') {
+        transformedFilter[key] = value;
+      } else {
+        transformedFilter[key] = { $eq: value };
       }
     }
 
-if (filter.metadata) {
-  Object.entries(filter.metadata).forEach(([key, value]) => {
-    if (typeof value === 'object' && value !== null) {
-      pineconeFilter[key] = value; // Preserve nested operators
-    } else {
-      pineconeFilter[key] = { $eq: value };
-    }
-  });
-}
+    return transformedFilter;
+  }
 
-    return pineconeFilter;
+  private updatePerformanceMetrics(operation: 'upsert' | 'query' | 'fetch' | 'deletion', startTime: number): void {
+    const duration = Date.now() - startTime;
+    const metricsKey = `average${operation.charAt(0).toUpperCase() + operation.slice(1)}Time`;
+    const currentAverage = this.metrics.performance[metricsKey as keyof VectorMetrics['performance']];
+    const operationCount = this.metrics.operations[`${operation}s` as keyof VectorMetrics['operations']];
+    
+    this.metrics.performance[metricsKey as keyof VectorMetrics['performance']] = 
+      (currentAverage * (operationCount - 1) + duration) / operationCount;
   }
 
   async close(): Promise<void> {
     try {
-      // Clean up Pinecone client resources if needed
+      thoughtLogger.log('execution', 'Closing Pinecone client connection');
       await super.close();
+      thoughtLogger.log('success', 'Pinecone client connection closed');
     } catch (error) {
-      this.handleError('CONNECTION_ERROR', 'Failed to close Pinecone store', error);
+      thoughtLogger.log('error', 'Failed to close Pinecone client connection', { error });
       throw error;
     }
   }
