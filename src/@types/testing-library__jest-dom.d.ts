@@ -1,12 +1,11 @@
-import '@testing-library/jest-dom';
+/// <reference types="@testing-library/jest-dom" />
+
+// This file is needed to make the jest-dom matchers available in tests
+// It re-exports everything from @testing-library/jest-dom
+export {};
 
 declare global {
-  namespace jest {
-    interface Matchers<R> {
-      toBeInTheDocument(): R;
-      toHaveTextContent(text: string | RegExp): R;
-      toBeVisible(): R;
-      // Add other matchers as needed
-    }
+  namespace Vi {
+    interface JestAssertion<T = any> extends jest.Matchers<void, T> {}
   }
-} 
+}

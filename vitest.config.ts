@@ -15,8 +15,12 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'src/tests/setup.ts',
+        '**/*.d.ts',
       ],
     },
+    deps: {
+      inline: ['@testing-library/jest-dom']
+    }
   },
   resolve: {
     alias: {
