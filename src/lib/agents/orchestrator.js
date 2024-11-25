@@ -194,10 +194,13 @@ return [4 /*yield*/, new Promise(function (resolve, reject) {
                                     requiredRoles.add('executor');
                                     break;
                             }
-                        }
-                        agents = [];
-                        _b = 0, requiredRoles_1 = requiredRoles;
-                        _c.label = 1;
+if (!Array.isArray(requiredRoles) || requiredRoles.length === 0) {
+    throw new Error('No required roles specified for agent creation');
+}
+_b = 0, requiredRoles_1 = requiredRoles;
+_c.label = 1;
+case 1:
+    if (!(_b < requiredRoles_1.length)) return [3 /*break*/, 4];
                     case 1:
                         if (!(_b < requiredRoles_1.length)) return [3 /*break*/, 4];
                         role = requiredRoles_1[_b];
