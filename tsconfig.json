@@ -14,7 +14,12 @@
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vite/client", "vitest/globals", "node", "@testing-library/jest-dom"],
+    "types": [
+      "vite/client",
+      "vitest/globals",
+      "node",
+      "@testing-library/jest-dom"
+    ],
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "allowJs": true,
     "resolveJsonModule": true,
@@ -23,6 +28,11 @@
     "jsx": "react-jsx",
     "baseUrl": "."
   },
-  "include": ["src", "vite.config.ts", "vitest.config.ts"],
+  "include": [
+    "src",
+    "vite.config.ts",
+    "vitest.config.ts",
+    "src/tests/setup.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }
