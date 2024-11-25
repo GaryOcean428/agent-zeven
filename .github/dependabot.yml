@@ -5,11 +5,26 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: npm
-    directory: "/javascript"
+    labels:
+      - "ci"
+      - "dependencies"
+
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
       interval: "weekly"
-  - package-ecosystem: bundler
-    directory: "/ruby"
-    schedule:
-      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "npm"
+    ignore:
+      # Ignore major version updates for these packages to avoid breaking changes
+      - dependency-name: "@types/*"
+        update-types: ["version-update:semver-major"]
+    groups:
+      # Group all non-major dependencies together
+      minor-patch-dependencies:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
