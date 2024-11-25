@@ -148,11 +148,19 @@ var CodeAwareness = /** @class */ (function () {
                     case 0:
                         files = [];
                         knownFiles = [
-                            '/src/lib/system/code-awareness.ts',
-                            '/src/lib/github/github-client.ts',
-                            '/src/lib/services/search-service.ts',
-                            // Add other known files
-                        ];
+knownFiles = [
+  '/src/lib/system/code-awareness.ts',
+  '/src/lib/github/github-client.ts',
+  '/src/lib/services/search-service.ts',
+].filter(async (path) => {
+  try {
+    await this.getFileContent(path);
+    return true;
+  } catch {
+    thoughtLogger.log('warning', `File not found: ${path}`);
+    return false;
+  }
+});
                         _i = 0, knownFiles_1 = knownFiles;
                         _a.label = 1;
                     case 1:
