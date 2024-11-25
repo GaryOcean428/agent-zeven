@@ -6,31 +6,14 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "env": {
-    "PERPLEXITY_API_KEY": "@perplexity_api_key",
-    "XAI_API_KEY": "@xai_api_key",
-    "GROQ_API_KEY": "@groq_api_key",
-    "HUGGINGFACE_TOKEN": "@huggingface_token",
-    "ANTHROPIC_API_KEY": "@anthropic_api_key",
-    "OPENAI_API_KEY": "@openai_api_key",
-    "GOOGLE_API_KEY": "@google_api_key",
-    "SERP_API_KEY": "@serp_api_key",
-    "TAVILY_API_KEY": "@tavily_api_key",
-    "GITHUB_TOKEN": "@github_token",
-    "LANGCHAIN_SERVICE_API_KEY": "@langchain_service_api_key",
-    "LANGCHAIN_PERSONAL_API_KEY": "@langchain_personal_api_key",
-    "PINECONE_API_KEY": "@pinecone_api_key",
-    "REDIS_HOST": "@redis_host",
-    "REDIS_PORT": "@redis_port",
-    "REDIS_PASSWORD": "@redis_password",
-    "REDIS_API": "@redis_api",
-    "REDIS_USERNAME": "@redis_username",
-    
-    "VITE_GITHUB_USERNAME": "@github_username",
-    "VITE_GITHUB_USEREMAIL": "@github_useremail",
-    "VITE_GOOGLE_SEARCH_ENGINE_ID": "@google_search_engine_id"
-  },
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
-  ]
+    "VITE_OPENAI_API_KEY": "@openai_api_key",
+    "VITE_ANTHROPIC_API_KEY": "@anthropic_api_key",
+    "VITE_PINECONE_API_KEY": "@pinecone_api_key",
+    "VITE_PINECONE_ENVIRONMENT": "@pinecone_environment",
+    "VITE_API_URL": "@api_url",
+    "VITE_ENABLE_ANALYTICS": "true",
+    "VITE_ENABLE_DEBUG": "false",
+    "VITE_VECTOR_STORE_NAMESPACE": "production",
+    "VITE_VECTOR_DIMENSION": "1536"
+  }
 }

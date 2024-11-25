@@ -32,14 +32,17 @@ export default defineConfig({
     }
   },
   optimizeDeps: {
-    include: ['tailwindcss-animate']
+    include: ['tailwindcss-animate'],
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx'
+      }
+    }
   },
   server: {
     hmr: {
       overlay: true
-    },
-    port: 3000,
-    host: true
+    }
   },
   test: {
     environment: 'jsdom',
