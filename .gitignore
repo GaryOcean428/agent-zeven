@@ -3,6 +3,7 @@
 .env.local
 .env.*.local
 
+
 # Dependencies
 node_modules
 .pnp
@@ -21,6 +22,9 @@ out
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.github/dependabot.yml
 
 # Editor
 .vscode/*
@@ -35,3 +39,8 @@ yarn-error.log*
 # System
 .DS_Store
 Thumbs.db
+
+# Logs
+logs
+*.log
+
