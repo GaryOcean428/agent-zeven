@@ -6,25 +6,10 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "env": {
-    "VITE_OPENAI_API_KEY": "@openai_api_key",
-    "VITE_ANTHROPIC_API_KEY": "@anthropic_api_key",
-    "VITE_PINECONE_API_KEY": "@pinecone_api_key",
-    "VITE_PINECONE_ENVIRONMENT": "@pinecone_environment",
-    "VITE_API_URL": "@vite_api_url",
-    "VITE_ENABLE_ANALYTICS": "true",
-    "VITE_ENABLE_DEBUG": "false",
-    "VITE_VECTOR_STORE_NAMESPACE": "production",
-    "VITE_VECTOR_DIMENSION": "1536",
-    "VITE_PERPLEXITY_API_KEY": "@perplexity_api_key",
-    "VITE_XAI_API_KEY": "@xai_api_key",
-    "VITE_GROQ_API_KEY": "@groq_api_key",
-    "VITE_HUGGINGFACE_TOKEN": "@huggingface_token",
-    "VITE_GOOGLE_API_KEY": "@google_api_key",
-    "VITE_GOOGLE_SEARCH_ENGINE_ID": "@google_search_engine_id",
-    "VITE_SERP_API_KEY": "@serp_api_key",
-    "VITE_TAVILY_API_KEY": "@tavily_api_key",
-    "VITE_GITHUB_TOKEN": "@github_token",
-    "VITE_LANGCHAIN_SERVICE_API_KEY": "@langchain_service_api_key",
-    "VITE_LANGCHAIN_PERSONAL_API_KEY": "@langchain_personal_api_key"
+    "VITE_API_URL": "@api_url",
+    "VITE_VECTOR_STORE_NAMESPACE": "@vector_store_namespace",
+    "VITE_VECTOR_DIMENSION": "@vector_dimension",
+    "VITE_ENABLE_ANALYTICS": "@enable_analytics",
+    "VITE_ENABLE_DEBUG": "@enable_debug"
   }
 }

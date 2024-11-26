@@ -1,0 +1,57 @@
+.
+├── .vercel/                      # Vercel deployment configuration
+│   ├── project.json
+│   └── README.txt
+├── .vscode/                      # VSCode configuration
+│   ├── extensions.json
+│   └── settings.json
+├── docs/                         # Documentation
+│   ├── DEPLOYMENT.md
+│   ├── GUIDELINES.md
+│   └── PINECONE_INTEGRATION.md
+├── public/                       # Static assets
+│   ├── favicon.ico
+│   ├── manifest.json
+│   └── robots.txt
+├── scripts/                      # Utility scripts
+│   ├── migrate.js
+│   └── seed.js
+├── src/                          # Source code
+│   ├── @types/                   # TypeScript type definitions
+│   │   ├── env.d.ts
+│   │   ├── index.d.ts
+│   │   ├── test-utils.d.ts
+│   │   └── testing-library__jest-dom.d.ts
+│   ├── components/               # React components
+│   │   ├── Agent.tsx
+│   │   ├── Canvas.tsx
+│   │   ├── Chat.tsx
+│   │   ├── ChatHistory.tsx
+│   │   ├── CommandInput.tsx
+│   │   ├── CompetitorAnalysis.tsx
+│   │   ├── ConfigWarning.tsx
+│   │   ├── DataTable.tsx
+│   │   └── DocumentList.tsx
+│   ├── lib/                      # Utility libraries
+│   │   └── config/
+│   │       └── env.ts
+│   ├── tests/                    # Test configuration
+│   │   └── setup.ts
+│   ├── App.tsx
+│   ├── env.d.ts
+│   ├── index.css
+│   ├── main.tsx
+│   ├── types.ts
+│   └── vite-env.d.ts
+├── .env.development              # Environment variables - Development
+├── .env.production              # Environment variables - Production
+├── .env.test                    # Environment variables - Testing
+├── .gitattributes              # Git attributes configuration
+├── .gitignore                  # Git ignore rules
+├── package.json                # Project dependencies and scripts
+├── tsconfig.json              # TypeScript base configuration
+├── tsconfig.app.json          # TypeScript app configuration
+├── tsconfig.node.json         # TypeScript node configuration
+├── vercel.json                # Vercel deployment configuration
+├── vite.config.ts             # Vite configuration
+└── vitest.config.ts           # Vitest test configuration
