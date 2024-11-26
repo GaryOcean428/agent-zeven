@@ -99,8 +99,16 @@ interface ThemeConfig {
   system: boolean;
 }
 
+// Test Types
+declare global {
+  namespace Vi {
+    interface Assertion extends jest.Matchers<void, any> {}
+    interface AsymmetricMatchersContaining extends jest.Matchers<void, any> {}
+  }
+}
+
 // Export type declarations
-declare module '@/types' {
+declare module 'types' {
   export type { 
     Config,
     Message,

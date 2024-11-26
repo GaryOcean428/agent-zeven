@@ -6,15 +6,10 @@
   "framework": "vite",
   "outputDirectory": "dist",
   "env": {
-    "VITE_OPENAI_API_KEY": "@openai_api_key",
-    "VITE_ANTHROPIC_API_KEY": "@anthropic_api_key",
-    "VITE_PINECONE_API_KEY": "@pinecone_api_key",
-    "VITE_PINECONE_ENVIRONMENT": "@pinecone_environment",
     "VITE_API_URL": "@api_url",
-    "VITE_ENABLE_ANALYTICS": "true",
-    "VITE_ENABLE_DEBUG": "false",
-    "VITE_VECTOR_STORE_NAMESPACE": "production",
-    "VITE_VECTOR_DIMENSION": "1536",
-    "VITE_PERPLEXITY_API_KEY": "@perplexity_api_key"
+    "VITE_VECTOR_STORE_NAMESPACE": "@vector_store_namespace",
+    "VITE_VECTOR_DIMENSION": "@vector_dimension",
+    "VITE_ENABLE_ANALYTICS": "@enable_analytics",
+    "VITE_ENABLE_DEBUG": "@enable_debug"
   }
 }
