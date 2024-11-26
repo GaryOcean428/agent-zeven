@@ -39,7 +39,7 @@ export class PineconeStoreClient extends BaseVectorStore {
     this.config = {
       ...config,
       batchSize: config.batchSize || 100,
-      dimension: config.dimension || 1536
+      dimension: config.dimension && (config.dimension >= 1 && config.dimension <= 20000) ? config.dimension : 1536,
     };
     this.client = new PineconeClient();
     this.metrics = {
