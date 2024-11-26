@@ -11,15 +11,24 @@ node_modules
 .pnp
 .pnp.js
 
-# Testing
-coverage
-.nyc_output
-
 # Build outputs
 dist
 dist-ssr
 build
-*.local
+out
+
+# Testing
+coverage
+.nyc_output
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs
+*.log
 
 # Editor directories and files
 .vscode/*
@@ -32,14 +41,7 @@ build
 *.sln
 *.sw?
 .DS_Store
-
-# Debug logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-logs
-*.log
+Thumbs.db
 
 # TypeScript cache
 *.tsbuildinfo
@@ -50,20 +52,15 @@ logs
 # Optional eslint cache
 .eslintcache
 
-# Misc
+# Miscellaneous
 .cache
 .temp
 .tmp
 *.pem
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
 
 # Vercel
 .vercel
 .now
-.env*.local
 .output
 
 # Runtime data
@@ -83,7 +80,6 @@ pids
 
 # Next.js
 .next
-out
 
 # Serverless
 .serverless/
