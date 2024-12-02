@@ -16,10 +16,18 @@ import { Settings } from './components/Settings';
 import { SearchPanel } from './components/panels/SearchPanel';
 import { AIProvider } from './components/providers/AIProvider';
 
-export type ActivePanel = 'chat' | 'canvas' | 'agent' | 'tools' | 'documents' | 'search' | 'settings';
+export const ActivePanel = {
+  CHAT: 'chat',
+  CANVAS: 'canvas',
+  AGENT: 'agent',
+  TOOLS: 'tools',
+  DOCUMENTS: 'documents',
+  SEARCH: 'search',
+  SETTINGS: 'settings'
+};
 
 function AppContent() {
-  const [activePanel, setActivePanel] = useState<ActivePanel>('chat');
+  const [activePanel, setActivePanel] = useState(ActivePanel.CHAT);
   const [isInitialized, setIsInitialized] = useState(false);
   const { addToast } = useToast();
 
@@ -63,19 +71,19 @@ function AppContent() {
       <div className="h-full">
         {(() => {
           switch (activePanel) {
-            case 'chat':
+            case ActivePanel.CHAT:
               return <Chat />;
-            case 'canvas':
+            case ActivePanel.CANVAS:
               return <Canvas />;
-            case 'agent':
+            case ActivePanel.AGENT:
               return <Agent />;
-            case 'tools':
+            case ActivePanel.TOOLS:
               return <Tools />;
-            case 'documents':
+            case ActivePanel.DOCUMENTS:
               return <Documents />;
-            case 'search':
+            case ActivePanel.SEARCH:
               return <SearchPanel />;
-            case 'settings':
+            case ActivePanel.SETTINGS:
               return <Settings />;
             default:
               return <Chat />;

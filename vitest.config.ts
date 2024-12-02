@@ -4,10 +4,9 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
-  plugins: [react()],
   test: {
-    environment: 'jsdom',
     globals: true,
+    environment: 'jsdom',
     setupFiles: ['./src/tests/setup.ts'],
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
     coverage: {
@@ -15,13 +14,10 @@ export default defineConfig({
       exclude: [
         'node_modules/',
         'src/tests/setup.ts',
-        '**/*.d.ts',
       ],
     },
-    deps: {
-      inline: ['@testing-library/jest-dom']
-    }
   },
+  plugins: react(),
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

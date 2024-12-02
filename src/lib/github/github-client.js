@@ -239,7 +239,7 @@ var GitHubClient = /** @class */ (function () {
     };
     GitHubClient.prototype.createOrUpdateFile = function (params) {
         return __awaiter(this, void 0, void 0, function () {
-            var error_6;
+            var maxRetries, retryCount, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -251,26 +251,13 @@ var GitHubClient = /** @class */ (function () {
                     case 2: return [4 /*yield*/, this.rateLimiter.acquire()];
                     case 3:
                         _a.sent();
+                        maxRetries = 3;
+                        retryCount = 0;
                         _a.label = 4;
                     case 4:
                         _a.trys.push([4, 6, , 7]);
-const maxRetries = 3;
-let retryCount = 0;
-while (retryCount < maxRetries) {
-    try {
-        return [4 /*yield*/ this.octokit.rest.repos.createOrUpdateFileContents(__assign(__assign({}, params), { content: Buffer.from(params.content).toString('base64') }))];
-    } catch (error) {
-        if (error.status === 429 || (error.status >= 500 && error.status <= 599)) {
-            retryCount++;
-            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
-            continue;
-        }
-        throw error;
-    }
-}
-                    case 5:
-                        _a.sent();
-                        return [3 /*break*/, 7];
+                        return [4 /*yield*/, this.retryOperation(maxRetries, function () { return _this.octokit.rest.repos.createOrUpdateFileContents(params); })];
+                    case 5: return [2 /*return*/, _a.sent()];
                     case 6:
                         error_6 = _a.sent();
                         thought_logger_1.thoughtLogger.log('error', 'Failed to create/update file', { error: error_6 });
