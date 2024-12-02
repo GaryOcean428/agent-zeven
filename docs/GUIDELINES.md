@@ -1,9 +1,11 @@
 # Project Guidelines
 
 ## Summary
+
 This project is a sophisticated multi-agent AI system built with modern web technologies. It features a modular architecture with specialized agents working together through a Mixture of Agents (MoA) approach.
 
 ### Key Technical Specifications
+
 - Frontend: React 18+ with TypeScript and Tailwind CSS
 - Build System: Vite for fast development and optimized production builds
 - UI Components: Custom component library with dark mode support
@@ -13,6 +15,7 @@ This project is a sophisticated multi-agent AI system built with modern web tech
 - Documentation: Extensive markdown documentation and JSDoc comments
 
 ### Development Focus
+
 - Type-safe development with TypeScript
 - Component-based architecture
 - Responsive and accessible design
@@ -24,6 +27,7 @@ This project is a sophisticated multi-agent AI system built with modern web tech
 ## Technology Stack
 
 ### Core Technologies
+
 - Framework: React 18+ with TypeScript
 - Build Tool: Vite
 - Styling: Tailwind CSS
@@ -32,6 +36,7 @@ This project is a sophisticated multi-agent AI system built with modern web tech
 - Node Version: 18.0.0+
 
 ### File Extensions
+
 - `.tsx` for React components with TypeScript
 - `.ts` for TypeScript files
 - `.css` for stylesheets
@@ -41,7 +46,7 @@ This project is a sophisticated multi-agent AI system built with modern web tech
 
 ## Project Structure
 
-```
+```plaintext
 project/
 ├── src/
 │   ├── components/        # React components
@@ -58,6 +63,7 @@ project/
 ## Coding Standards
 
 ### TypeScript
+
 - Strict mode enabled
 - Explicit type definitions
 - Interface over type when possible
@@ -65,6 +71,7 @@ project/
 - Async/await over promises
 
 ### React
+
 - Functional components
 - Custom hooks for logic reuse
 - Proper prop typing
@@ -72,6 +79,7 @@ project/
 - Error boundaries
 
 ### CSS/Tailwind
+
 - Use Tailwind utility classes
 - Custom classes in components/
 - Dark mode support
@@ -81,12 +89,14 @@ project/
 ## Component Guidelines
 
 ### Naming Conventions
+
 - Components: PascalCase (e.g., `ChatPanel.tsx`)
 - Hooks: camelCase with 'use' prefix (e.g., `useAuth.ts`)
 - Utilities: camelCase (e.g., `formatDate.ts`)
 - Types/Interfaces: PascalCase (e.g., `UserProfile.ts`)
 
 ### Component Structure
+
 ```typescript
 import { type FC } from 'react';
 import { useCallback, useState } from 'react';
@@ -106,6 +116,7 @@ export const Component: FC<ComponentProps> = ({ prop1, prop2 }) => {
 ## API Integration
 
 ### Error Handling
+
 ```typescript
 try {
   await apiCall();
@@ -119,6 +130,7 @@ try {
 ```
 
 ### API Response Types
+
 ```typescript
 interface APIResponse<T> {
   data: T;
@@ -130,6 +142,7 @@ interface APIResponse<T> {
 ## State Management
 
 ### Context Structure
+
 ```typescript
 interface State {
   // State definition
@@ -148,11 +161,13 @@ const Context = createContext<{
 ## Testing
 
 ### Test Files
+
 - `.test.ts` for unit tests
 - `.spec.ts` for integration tests
 - `.e2e.ts` for end-to-end tests
 
 ### Testing Guidelines
+
 - Unit tests for utilities
 - Integration tests for components
 - E2E tests for critical paths
@@ -161,12 +176,14 @@ const Context = createContext<{
 ## Documentation
 
 ### Code Documentation
+
 - JSDoc for functions and components
 - Inline comments for complex logic
 - README files for directories
 - Type definitions as documentation
 
 ### Markdown Standards
+
 - Clear headings
 - Code examples
 - Links to references
@@ -175,6 +192,7 @@ const Context = createContext<{
 ## Performance
 
 ### Optimization Techniques
+
 - Code splitting
 - Lazy loading
 - Image optimization
@@ -182,6 +200,7 @@ const Context = createContext<{
 - Debouncing/throttling
 
 ### Monitoring
+
 - Lighthouse scores
 - Bundle size
 - Load times
@@ -190,6 +209,7 @@ const Context = createContext<{
 ## Security
 
 ### Best Practices
+
 - Input validation
 - API key protection
 - XSS prevention
@@ -199,6 +219,7 @@ const Context = createContext<{
 ## Environment Variables
 
 ### Required Variables
+
 ```plaintext
 VITE_API_URL=api_url
 VITE_GITHUB_TOKEN=github_token
@@ -210,13 +231,15 @@ VITE_PERPLEXITY_API_KEY=perplexity_api_key
 ## Git Workflow
 
 ### Branch Naming
+
 - feature/feature-name
 - fix/bug-description
 - docs/documentation-update
 - refactor/refactor-description
 
 ### Commit Messages
-```
+
+```plaintext
 type(scope): description
 
 - feat: new feature
@@ -231,6 +254,7 @@ type(scope): description
 ## Dependencies
 
 ### Core Dependencies
+
 ```json
 {
   "react": "^18.0.0",
@@ -243,6 +267,7 @@ type(scope): description
 ```
 
 ### Development Dependencies
+
 ```json
 {
   "@types/react": "^18.0.0",
@@ -257,6 +282,7 @@ type(scope): description
 ## IDE Configuration
 
 ### VSCode Settings
+
 ```json
 {
   "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -269,6 +295,7 @@ type(scope): description
 ```
 
 ### Recommended Extensions
+
 - ESLint
 - Prettier
 - Tailwind CSS IntelliSense
@@ -278,6 +305,7 @@ type(scope): description
 ## Build and Deployment
 
 ### Development
+
 ```bash
 # Windows PowerShell
 npm run dev
@@ -287,6 +315,7 @@ npm run dev
 ```
 
 ### Production
+
 ```bash
 # Windows PowerShell
 npm run build
@@ -298,6 +327,7 @@ npm run preview
 ```
 
 ### Environment Configurations
+
 - Development: `.env.development`
 - Production: `.env.production`
-- Testing: `.env.test` 
+- Testing: `.env.test`

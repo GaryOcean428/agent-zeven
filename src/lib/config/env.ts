@@ -5,7 +5,9 @@ export const envSchema = z.object({
   OPENAI_API_KEY: z.string(),
   ANTHROPIC_API_KEY: z.string(),
   PINECONE_API_KEY: z.string().optional(),
-  PERPLEXITY_API_KEY: z.string().optional(),
+  PERPLEXITY_API_KEY: z.string({
+    required_error: "PERPLEXITY_API_KEY is required"
+  }),
   XAI_API_KEY: z.string().optional(),
   GROQ_API_KEY: z.string().optional(),
   HUGGINGFACE_TOKEN: z.string().optional(),
@@ -26,6 +28,13 @@ export const envSchema = z.object({
   VITE_VECTOR_DIMENSION: z.string().default('1536'),
   VITE_ENABLE_ANALYTICS: z.string().default('false'),
   VITE_ENABLE_DEBUG: z.string().default('false'),
+
+  // Perplexity Configuration
+  PERPLEXITY_BASE_URL: z.string().default('https://api.perplexity.ai'),
+  PERPLEXITY_MODEL: z.string().default('pplx-7b-online'),
+  PERPLEXITY_MAX_TOKENS: z.number().default(1024),
+  PERPLEXITY_TEMPERATURE: z.number().default(0.0),
+  PERPLEXITY_FREQUENCY_PENALTY: z.number().default(1),
 });
 
 export type Env = z.infer<typeof envSchema>;

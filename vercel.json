@@ -10,6 +10,12 @@
     "VITE_VECTOR_STORE_NAMESPACE": "@vector_store_namespace",
     "VITE_VECTOR_DIMENSION": "@vector_dimension",
     "VITE_ENABLE_ANALYTICS": "@enable_analytics",
-    "VITE_ENABLE_DEBUG": "@enable_debug"
+    "VITE_ENABLE_DEBUG": "@enable_debug",
+    "PERPLEXITY_API_KEY": "@perplexity_api_key",
+    "PERPLEXITY_BASE_URL": "@perplexity_base_url",
+    "PERPLEXITY_MODEL": "@perplexity_model",
+    "PERPLEXITY_MAX_TOKENS": "@perplexity_max_tokens",
+    "PERPLEXITY_TEMPERATURE": "@perplexity_temperature",
+    "PERPLEXITY_FREQUENCY_PENALTY": "@perplexity_frequency_penalty"
   }
 }

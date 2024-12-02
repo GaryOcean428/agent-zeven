@@ -3,6 +3,7 @@
 ## Core Services
 
 ### 1. GitHub Integration
+
 ```typescript
 interface GitHubConfig {
   apiKey: string;
@@ -18,6 +19,7 @@ async function createPullRequest(params: PullRequestParams): Promise<PullRequest
 ```
 
 ### 2. Search Integration
+
 ```typescript
 interface SearchConfig {
   providers: {
@@ -60,6 +62,7 @@ async function aggregateResults(results: SearchResult[]): Promise<string>
 ## API Configuration
 
 ### Authentication
+
 ```typescript
 interface APIConfig {
   apiKeys: {
@@ -76,6 +79,7 @@ interface APIConfig {
 ```
 
 ### Rate Limits
+
 - GitHub: 5000 requests/hour
 - Groq: 60 requests/minute
 - Perplexity: 100 requests/minute
@@ -87,6 +91,7 @@ interface APIConfig {
 ## Usage Examples
 
 ### GitHub Operations
+
 ```typescript
 // Initialize GitHub client
 const github = GitHubClient.getInstance();
@@ -107,6 +112,7 @@ const content = await github.getFileContent(
 ```
 
 ### Search Operations
+
 ```typescript
 // Initialize search service
 const search = SearchService.getInstance();
