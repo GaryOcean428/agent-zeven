@@ -5,6 +5,7 @@
 .env.development
 .env.test
 .env.production
+env.local.backup
 
 # Dependencies
 node_modules
