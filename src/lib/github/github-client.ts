@@ -1,9 +1,56 @@
 import { Octokit } from 'octokit';
 import { thoughtLogger } from '../logging/thought-logger';
 import { AppError } from '../errors/AppError';
-import { config } from '../config';
+import { decodeBase64 } from '../../utils/base64';
 import { RateLimiter } from '../api/rate-limiter';
-import type { Repository, Branch, PullRequest, FileChange } from './types';
+import type { Endpoints } from '@octokit/types';
+
+type CreateRepositoryResponse = Endpoints['POST /user/repos']['response']['data'];
+type GetRepositoryResponse = Endpoints['GET /repos/{owner}/{repo}']['response']['data'];
+type ListRepositoriesResponse = Endpoints['GET /user/repos']['response']['data'];
+type CreatePullRequestResponse = Endpoints['POST /repos/{owner}/{repo}/pulls']['response']['data'];
+
+interface CreateRepositoryOptions extends Record<string, any> {
+  name: string;
+  description?: string;
+  private?: boolean;
+  auto_init?: boolean;
+}
+
+interface CreateOrUpdateFileParams extends Record<string, any> {
+  owner: string;
+  repo: string;
+  path: string;
+  message: string;
+  content: string;
+  sha?: string;
+  branch?: string;
+}
+
+interface PullRequestParams extends Record<string, any> {
+  owner: string;
+  repo: string;
+  title: string;
+  head: string;
+  base: string;
+  body?: string;
+}
+
+interface MergePullRequestParams extends Record<string, any> {
+  owner: string;
+  repo: string;
+  pull_number: number;
+  commit_title?: string;
+  commit_message?: string;
+  merge_method?: 'merge' | 'squash' | 'rebase';
+}
+
+// GitHub configuration
+const GITHUB_CONFIG = {
+  baseUrl: 'https://api.github.com',
+  apiVersion: '2022-11-28',
+  token: import.meta.env.VITE_GITHUB_TOKEN || ''
+} as const;
 
 export class GitHubClient {
   private static instance: GitHubClient;
@@ -17,8 +64,8 @@ export class GitHubClient {
       interval: 60 * 60 * 1000 // 1 hour
     });
 
-    if (!config.apiKeys.github) {
-      thoughtLogger.log('warning', 'GitHub API key not configured');
+    if (!GITHUB_CONFIG.token) {
+      thoughtLogger.log('error', 'GitHub API key not configured');
     }
   }
 
@@ -33,21 +80,19 @@ export class GitHubClient {
     if (this.initialized) return;
 
     try {
-      if (!config.apiKeys.github) {
+      if (!GITHUB_CONFIG.token) {
         throw new AppError('GitHub API key not configured', 'CONFIG_ERROR');
       }
 
       this.octokit = new Octokit({
-        auth: config.apiKeys.github,
-        baseUrl: config.services.github.baseUrl,
+        auth: GITHUB_CONFIG.token,
+        baseUrl: GITHUB_CONFIG.baseUrl,
         headers: {
-          'X-GitHub-Api-Version': config.services.github.apiVersion
+          'X-GitHub-Api-Version': GITHUB_CONFIG.apiVersion
         }
       });
 
-      // Verify connection
       const { data: user } = await this.octokit.rest.users.getAuthenticated();
-      
       thoughtLogger.log('success', 'GitHub client initialized successfully', {
         username: user.login
       });
@@ -59,17 +104,8 @@ export class GitHubClient {
     }
   }
 
-  async listRepositories(options: {
-    type?: 'all' | 'owner' | 'public' | 'private' | 'member';
-    sort?: 'created' | 'updated' | 'pushed' | 'full_name';
-    direction?: 'asc' | 'desc';
-    per_page?: number;
-    page?: number;
-  } = {}): Promise<Repository[]> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+  async listRepositories(options: Record<string, any> = {}): Promise<ListRepositoriesResponse> {
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {
@@ -81,11 +117,8 @@ export class GitHubClient {
     }
   }
 
-  async getRepository(owner: string, repo: string): Promise<Repository> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+  async getRepository(owner: string, repo: string): Promise<GetRepositoryResponse> {
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {
@@ -97,16 +130,8 @@ export class GitHubClient {
     }
   }
 
-  async createRepository(options: {
-    name: string;
-    description?: string;
-    private?: boolean;
-    auto_init?: boolean;
-  }): Promise<Repository> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+  async createRepository(options: CreateRepositoryOptions): Promise<CreateRepositoryResponse> {
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {
@@ -119,10 +144,7 @@ export class GitHubClient {
   }
 
   async getFileContent(owner: string, repo: string, path: string): Promise<string> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {
@@ -133,7 +155,7 @@ export class GitHubClient {
       });
 
       if ('content' in data) {
-        return Buffer.from(data.content, 'base64').toString('utf-8');
+        return decodeBase64(data.content);
       }
       throw new Error('Not a file');
     } catch (error) {
@@ -142,44 +164,20 @@ export class GitHubClient {
     }
   }
 
-  async createOrUpdateFile(params: {
-    owner: string;
-    repo: string;
-    path: string;
-    message: string;
-    content: string;
-    branch?: string;
-    sha?: string;
-  }): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+  async createOrUpdateFile(params: CreateOrUpdateFileParams): Promise<void> {
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {
-      await this.octokit!.rest.repos.createOrUpdateFileContents({
-        ...params,
-        content: Buffer.from(params.content).toString('base64')
-      });
+      await this.octokit!.rest.repos.createOrUpdateFileContents(params);
     } catch (error) {
       thoughtLogger.log('error', 'Failed to create/update file', { error });
       throw new AppError('Failed to create/update file', 'GITHUB_ERROR', error);
     }
   }
 
-  async createPullRequest(params: {
-    owner: string;
-    repo: string;
-    title: string;
-    head: string;
-    base: string;
-    body?: string;
-  }): Promise<PullRequest> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+  async createPullRequest(params: PullRequestParams): Promise<CreatePullRequestResponse> {
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {
@@ -191,16 +189,8 @@ export class GitHubClient {
     }
   }
 
-  async mergePullRequest(params: {
-    owner: string;
-    repo: string;
-    pull_number: number;
-    merge_method?: 'merge' | 'squash' | 'rebase';
-  }): Promise<void> {
-    if (!this.initialized) {
-      await this.initialize();
-    }
-
+  async mergePullRequest(params: MergePullRequestParams): Promise<void> {
+    if (!this.initialized) await this.initialize();
     await this.rateLimiter.acquire();
 
     try {

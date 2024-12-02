@@ -6,8 +6,23 @@ import { MemoryManager } from './memory/memory-manager';
 import { GitHubClient } from './github/github-client';
 import { PineconeClient } from './vector/pinecone-client';
 
-function checkApiKeys() {
-  const status = {
+interface ApiKeyStatus {
+  xai: boolean;
+  groq: boolean;
+  perplexity: boolean;
+  huggingface: boolean;
+  github: boolean;
+  pinecone: boolean;
+}
+
+interface ApiKeyCheckResult {
+  valid: boolean;
+  missingKeys: string[];
+  status: ApiKeyStatus;
+}
+
+function checkApiKeys(): ApiKeyCheckResult {
+  const status: ApiKeyStatus = {
     xai: Boolean(config.apiKeys.xai),
     groq: Boolean(config.apiKeys.groq),
     perplexity: Boolean(config.apiKeys.perplexity),
@@ -27,34 +42,34 @@ function checkApiKeys() {
   };
 }
 
-export async function initializeSystem() {
+export async function initializeSystem(): Promise<boolean> {
   try {
     thoughtLogger.log('plan', 'Starting system initialization');
 
-    // Check API keys
     const { valid, missingKeys, status } = checkApiKeys();
-    
     if (!valid) {
-      thoughtLogger.log('warning', 'Missing required API keys', { 
+      thoughtLogger.log('warning', 'Missing required API keys', {
         missingKeys,
         apiKeys: status
       });
     }
 
-    // Initialize core services with fallbacks
     const github = GitHubClient.getInstance();
     const pinecone = PineconeClient.getInstance();
     const modelRouter = ModelRouter.getInstance();
     const memoryManager = MemoryManager.getInstance();
 
-    // Initialize all services concurrently
-    const [githubResult, pineconeResult, modelRouterResult, memoryResult] = 
-      await Promise.allSettled([
-        github.initialize(),
-        pinecone.initialize(),
-        modelRouter.initialize(),
-        memoryManager.initialize()
-      ]);
+    const [
+      githubResult,
+      pineconeResult,
+      modelRouterResult,
+      memoryResult
+    ] = await Promise.allSettled([
+      github.initialize(),
+      pinecone.initialize(),
+      modelRouter.initialize(),
+      memoryManager.initialize()
+    ]);
 
     // Initialize agent system last
     await agentSystem.initialize();
