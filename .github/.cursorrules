@@ -1,0 +1,83 @@
+# Component Rules
+components/ui/** @shadcn/ui
+components/**/page.tsx @pages
+components/**/layout.tsx @layouts
+components/**/*.tsx @components
+
+# Styling Rules
+**/*.css @styles
+**/tailwind.config.js @tailwind
+**/styles/** @styles
+
+# Type Definitions
+src/@types/** @types
+**/*.d.ts @types
+
+# Configuration Files
+*.config.{js,ts} @config
+.env* @env
+vercel.json @config
+tsconfig*.json @typescript
+
+# Testing
+**/*.test.{ts,tsx} @tests
+**/*.spec.{ts,tsx} @tests
+vitest.config.ts @tests
+src/tests/** @tests
+
+# Documentation
+docs/** @docs
+**/*.md @docs
+**/README.md @docs
+
+# Build & Deploy
+.vercel/** @deploy
+scripts/** @scripts
+
+# State Management
+**/context/** @state
+**/store/** @state
+**/hooks/** @hooks
+
+# API & Services
+**/api/** @api
+**/services/** @services
+**/lib/** @utils
+
+# Assets
+public/** @assets
+**/assets/** @assets
+
+# Security & Environment
+.env* @security
+**/config/env.ts @security
+
+# Git Configuration
+.git* @git
+.github/** @github
+
+# Dependencies
+package.json @dependencies
+package-lock.json @dependencies
+yarn.lock @dependencies
+pnpm-lock.yaml @dependencies
+
+# Utilities
+**/utils/** @utils
+**/helpers/** @utils
+**/constants/** @utils
+
+# Features
+**/features/** @features
+**/modules/** @features
+
+# Layouts
+**/layouts/** @layouts
+**/templates/** @layouts
+
+# Database
+**/db/** @database
+**/models/** @database
+
+# Middleware
+**/middleware/** @middleware
