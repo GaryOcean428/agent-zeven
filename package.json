@@ -16,6 +16,7 @@
     "vercel-dev": "npm run dev"
   },
   "dependencies": {
+    "@octokit/types": "latest",
     "@pinecone-database/pinecone": "^4.0.0",
     "@radix-ui/react-scroll-area": "^1.2.1",
     "@radix-ui/react-slot": "^1.1.0",
@@ -46,8 +47,7 @@
     "remark-gfm": "latest",
     "tailwind-merge": "latest",
     "zod": "latest",
-    "zustand": "latest",
-    "@octokit/types": "latest"
+    "zustand": "latest"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
@@ -71,6 +71,7 @@
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "knex": "latest",
+    "typescript": "^5.7.2",
     "vite": "^6.0.2",
     "vitest": "^2.1.6"
   }
